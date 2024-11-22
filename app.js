@@ -11,6 +11,8 @@ import usersRouter from './routes/users.js';
 
 import projectRoutes from './routes/projectRoutes.js';
 import taskRouter from './routes/taskRoutes.js';
+import authRouter from './routes/auth.js';
+
 import { createServer } from 'http';
 import { Server as SocketIOServer } from 'socket.io';
 
@@ -26,6 +28,7 @@ app.use('/tasks', taskRouter);
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/projects', projectRoutes);
+app.use('/auth', authRouter);
 
 
 mongoose.connect(process.env.MONGO_URI, {

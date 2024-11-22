@@ -1,8 +1,16 @@
-const express = require('express');
+// import { authenticate } from "../middleware/authenticate";
+
+import express from 'express';
+import Task from '../models/Task.js';
+import User from '../models/User.js';
+import { authenticate } from '../middleware/authenticate.js';
+
 const router = express.Router();
-const User = require('../models/User');
-const jwt = require('jsonwebtoken');
-const bcrypt = require('bcrypt');
+
+
+import jwt from 'jsonwebtoken';
+import bcrypt from 'bcrypt';
+
 const { JWT_SECRET } = process.env;
 
 // Login
