@@ -1,10 +1,14 @@
-import { authenticate } from "../middleware/authenticate";
+// import { authenticate } from "../middleware/authenticate";
 
-const express = require('express');
+import express from 'express';
+import Task from '../models/Task.js';
+import Project from '../models/Project.js';
+import { authenticate } from '../middleware/authenticate.js';
+
 const router = express.Router();
-const Task = require('../models/Task');
-const Project = require('../models/Project');
-const jwt = require('jsonwebtoken');
+
+
+import jwt from 'jsonwebtoken';
 
 
 // Get tasks for a project
@@ -65,4 +69,4 @@ router.post('/:taskId/comments', authenticate, async (req, res) => {
     }
 });
 
-module.exports = router;
+export default router;
