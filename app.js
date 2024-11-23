@@ -14,11 +14,14 @@ import taskRouter from './routes/taskRoutes.js';
 import authRouter from './routes/auth.js';
 
 import { createServer } from 'http';
+import  cors  from 'cors';
+
 import { Server as SocketIOServer } from 'socket.io';
 
 
 
 var app = express();
+app.use(cors())
 
 app.use(logger('dev'));
 app.use(express.json());

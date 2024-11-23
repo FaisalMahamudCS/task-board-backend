@@ -17,6 +17,7 @@ const { JWT_SECRET } = process.env;
 router.post('/login', async (req, res) => {
     const { email, password } = req.body;
     const user = await User.findOne({ email });
+    console.log(user)
     if (!user) return res.status(401).send('Invalid Credentials');
 
     const match = await bcrypt.compare(password, user.password);
