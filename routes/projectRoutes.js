@@ -24,7 +24,8 @@ router.post('/', authenticate, async (req, res) => {
 // Get all projects for the logged-in user
 router.get('/', authenticate, async (req, res) => {
     try {
-        const projects = await Project.find({ members: req.user.id }).populate('members', 'username email');
+        
+        const projects = await Project.find({}).populate('members', 'username email');
         res.json(projects);
     } catch (error) {
         res.status(500).send(error.message);

@@ -9,12 +9,14 @@ const router = express.Router();
 
 
 import jwt from 'jsonwebtoken';
+import mongoose from 'mongoose';
 
 
 // Get tasks for a project
 router.get('/:projectId', authenticate, async (req, res) => {
     try {
-        const tasks = await Task.find({ project: req.params.projectId }).populate('assignee', 'username');
+        const projectId = new mongoose.Types.ObjectId(req.params.projectId);
+        const tasks = await Task.find({ projectId: projectId})
         res.json(tasks);
     } catch (error) {
         res.status(500).send(error.message);
@@ -52,6 +54,7 @@ router.patch('/:taskId', authenticate, async (req, res) => {
             res.status(403).send('Forbidden');
         }
     } catch (error) {
+        console.log(error)
         res.status(400).send(error.message);
     }
 });
