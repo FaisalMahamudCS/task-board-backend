@@ -82,12 +82,22 @@ const updateTaskStatusAsMember = async (task, status) => {
 router.patch('/:taskId', authenticate, updateTask);
 
 // Add a comment to a task
-router.post('/:taskId/comments', authenticate, async (req, res) => {
+router.patch('/:taskId/comments', authenticate, async (req, res) => {
     try {
         const task = await Task.findById(req.params.taskId);
         if (!task) return res.status(404).send('Task not found');
-        task.comments.push({ text: req.body.text, user: req.user.id, date: new Date() });
+
+        // Add the comment to the task
+        const comment = { text: req.body.text, user: req.user.id, date: new Date() };
+        task.comments.push(comment);
         await task.save();
+
+        // Emit a socket event for the updated task
+        io.emit('commentAdded', {
+            taskId: task._id,
+            comment,
+        });
+
         res.json(task);
     } catch (error) {
         res.status(400).send(error.message);
