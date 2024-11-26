@@ -13,7 +13,7 @@ import projectRoutes from './routes/projectRoutes.js';
 import taskRouter from './routes/taskRoutes.js';
 import authRouter from './routes/auth.js';
 
-import { createServer } from 'http';
+import { createServer,  } from 'http';
 import  cors  from 'cors';
 
 import { Server as SocketIOServer } from 'socket.io';
@@ -42,8 +42,12 @@ mongoose.connect(process.env.MONGO_URI, {
 
   // Create HTTP server and initialize Socket.io
 const server = createServer(app);
-const io = new SocketIOServer(server);
-
+export const io = new SocketIOServer(server, {
+    cors: {
+        origin: "http://localhost:3000", // Replace with your frontend URL
+        methods: ["GET", "POST"],
+    },
+});
 io.on('connection', (socket) => {
     console.log('User connected:', socket.id);
 
@@ -59,7 +63,35 @@ io.on('connection', (socket) => {
     socket.on('disconnect', () => {
         console.log('User disconnected:', socket.id);
     });
+    socket.on("joinProject", (projectId) => {
+        socket.join(projectId);
+        console.log(`User joined project room: ${projectId}`);
+    });
+    
+    // Leave a project room
+    socket.on("leaveProject", (projectId) => {
+        socket.leave(projectId);
+        console.log(`User left project room: ${projectId}`);
+    });
+    
+    // Handle task updates and broadcast them to the room
+    socket.on("taskUpdated", (data) => {
+        console.log(`Task updated in project: ${data.projectId}`);
+        io.emit("taskUpdated", data);
+    });
+    
+    // Handle new tasks and broadcast them to the room
+    socket.on("taskAdded", (data) => {
+        console.log(`New task added to project: ${data.projectId}`);
+        io.emit("taskAdded", data);
+    });
+    
 });
+
+// Handle disconnection
+// socket.on("disconnect", () => {
+//     console.log("User disconnected:", socket.id);
+// });
 
 server.listen(process.env.PORT || 3000, () => {
     console.log(`Server running on port ${process.env.PORT || 3000}`);
